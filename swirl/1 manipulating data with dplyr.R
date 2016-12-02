@@ -1,0 +1,54 @@
+mydf <- read.csv(path2csv, stringsAsFactors = FALSE)
+dim(mydf)
+head(mydf)
+
+library(dplyr)
+packageVersion('dplyr')
+
+# "The main advantage to using a tbl_df over a regular data frame is the printing."
+cran <- tbl_df(mydf)
+rm('mydf')
+cran
+
+
+# select
+?select
+select(cran, ip_id, package, country)
+
+5:20
+select(cran, r_arch:country)
+select(cran, country:r_arch)
+cran
+select(cran, -time)
+select(cran, -(X:size))
+
+
+# filter
+filter(cran, package == 'swirl')
+filter(cran, r_version == '3.1.1', country == 'US')
+?Comparison
+filter(cran, r_version <= '3.0.2', country == 'IN')
+filter(cran, country == 'US' | country == 'IN')
+filter(cran, size > 100500, r_os == 'linux-gnu')
+filter(cran, !is.na(r_version))
+
+
+# arrange
+cran2 <- select(cran, size:ip_id)
+arrange(cran2, ip_id)
+arrange(cran2, desc(ip_id))
+arrange(cran2, package, ip_id)
+arrange(cran2, country, desc(r_version), ip_id)
+
+
+# mutate
+cran3 <- select(cran, ip_id, package, size)
+cran3
+mutate(cran3, size_mb = size / 2^20)
+mutate(cran3, size_mb = size / 2^20, size_gb = size_mb / 2^10)
+mutate(cran3, correct_size = size + 1000)
+
+
+# summarize
+summarize(cran, avg_bytes = mean(size))
+# more useful when data is grouped
